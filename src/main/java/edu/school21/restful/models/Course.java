@@ -28,21 +28,21 @@ public class Course extends BaseEntity{
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
-            name = "course_users",
+            name = "tbl_course_users",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User>      teachers;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
-            name = "course_users",
+            name = "tbl_course_users",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User>      students;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
-            name = "course_lessons",
+            name = "tbl_course_lessons",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     private List<Lesson>    lessons;
