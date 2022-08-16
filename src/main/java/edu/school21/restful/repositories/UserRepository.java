@@ -6,12 +6,12 @@ import net.bytebuddy.utility.nullability.NeverNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNullApi;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLogin(String login);
-    List<User>     getAllByRole(Role role);
+    Set<User>     getAllByRole(Role role);
 
     @Override
     void delete(User entity);

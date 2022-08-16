@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -31,19 +31,19 @@ public class Course extends BaseEntity{
             name = "tbl_course_users",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User>      teachers;
+    private Set<User>       teachers;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "tbl_course_users",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User>      students;
+    private Set<User>       students;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "tbl_course_lessons",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_id"))
-    private List<Lesson>    lessons;
+    private Set<Lesson>     lessons;
 }

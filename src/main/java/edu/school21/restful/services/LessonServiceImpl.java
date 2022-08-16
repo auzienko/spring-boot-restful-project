@@ -7,7 +7,8 @@ import edu.school21.restful.repositories.LessonRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -15,8 +16,8 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
 
     @Override
-    public List<Lesson> findAll() {
-        return lessonRepository.findAll();
+    public Set<Lesson> findAll() {
+        return  new HashSet<>(lessonRepository.findAll());
     }
 
     @Override
