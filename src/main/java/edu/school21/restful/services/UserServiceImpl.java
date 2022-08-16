@@ -7,15 +7,16 @@ import edu.school21.restful.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public Set<User> findAll(){
+        return new HashSet<>(userRepository.findAll());
     }
 
     @Override

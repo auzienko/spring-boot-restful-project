@@ -3,19 +3,21 @@ package edu.school21.restful.services;
 
 import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.Course;
+import edu.school21.restful.models.User;
 import edu.school21.restful.repositories.CourseRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     @Override
-    public List<Course> findAll() {
-        return courseRepository.findAll();
+    public Set<Course> findAll() {
+        return new HashSet<>(courseRepository.findAll());
     }
 
     @Override
@@ -37,4 +39,5 @@ public class CourseServiceImpl implements CourseService {
     public void delete(Course entity) {
         courseRepository.delete(entity);
     }
+
 }
