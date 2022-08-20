@@ -11,7 +11,8 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLogin(String login);
-    Set<User>     getAllByRole(Role role);
+
+    Set<User> getAllByRole(Role role);
 
     @Override
     void delete(User entity);

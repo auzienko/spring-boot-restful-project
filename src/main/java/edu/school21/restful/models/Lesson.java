@@ -13,17 +13,17 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @ToString
 @Table(schema = "rstf", name = "tbl_lessons")
-public class Lesson extends BaseEntity{
-    @Column(name =      "start_time")
-    private LocalTime   startTime;
+public class Lesson extends BaseEntity {
+    @Column(name = "start_time")
+    private LocalTime startTime;
 
-    @Column(name =      "end_time")
-    private LocalTime   endTime;
+    @Column(name = "end_time")
+    private LocalTime endTime;
 
-    @Column(name =      "day_of_week")
-    private DayOfWeek   dayOfWeek;
+    @Column(name = "day_of_week")
+    private DayOfWeek dayOfWeek;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "teacher", referencedColumnName = "id")
-    private User        teacher;
+    private User teacher;
 }

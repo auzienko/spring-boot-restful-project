@@ -15,19 +15,19 @@ import javax.persistence.Table;
 @ToString
 //@JsonIgnoreProperties({ "password", })
 @Table(schema = "rstf", name = "tbl_users")
-public class User extends BaseEntity{
+public class User extends BaseEntity {
     @Column(name = "first_name")
-    private String  firstName;
+    private String firstName;
 
     @Column(name = "last_name")
-    private String  lastName;
+    private String lastName;
 
     @Column(name = "role")
-    private Role    role;
+    private Role role;
 
     @Column(name = "login")
-    private String  login;
+    private String login;
 
     @Column(name = "password")
-    private String  password;
+    private String password;
 }
