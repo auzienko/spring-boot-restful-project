@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-//@JsonIgnoreProperties({ "password", })
+@JsonIgnoreProperties({"password"})
 @Table(schema = "rstf", name = "tbl_users")
 public class User extends BaseEntity {
     @Column(name = "first_name")
