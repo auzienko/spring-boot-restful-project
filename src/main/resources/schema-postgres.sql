@@ -26,7 +26,7 @@ create table if not exists rstf.tbl_lessons
     start_time      timestamp,
     end_time        timestamp,
     day_of_week     smallint,
-    teacher         varchar
+    teacher         bigint
 );
 
 create table if not exists rstf.tbl_course_lessons(
