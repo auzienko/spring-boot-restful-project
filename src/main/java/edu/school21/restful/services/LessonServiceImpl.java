@@ -5,10 +5,14 @@ import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.Lesson;
 import edu.school21.restful.repositories.LessonRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @AllArgsConstructor
 @Service
@@ -17,7 +21,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Set<Lesson> findAll() {
-        return  new HashSet<>(lessonRepository.findAll());
+        return new HashSet<>((Collection<Lesson>) lessonRepository.findAll(Sort.by(DESC, "id")));
     }
 
     @Override
