@@ -17,7 +17,8 @@ create table if not exists rstf.tbl_courses
     start_time      timestamp,
     end_date        timestamp,
     name            varchar,
-    description     varchar
+    description     varchar,
+    state           smallint
 );
 
 create table if not exists rstf.tbl_lessons

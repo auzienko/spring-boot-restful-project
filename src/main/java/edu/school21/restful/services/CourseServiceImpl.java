@@ -3,6 +3,7 @@ package edu.school21.restful.services;
 
 import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.Course;
+import edu.school21.restful.models.State;
 import edu.school21.restful.models.User;
 import edu.school21.restful.repositories.CourseRepository;
 import lombok.AllArgsConstructor;
@@ -45,4 +46,10 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.delete(entity);
     }
 
+    @Override
+    public void publish(Course instance) {
+        if (instance.getState() == State.DRAFT) {
+            instance.setState(State.PUBLISHED);
+        }
+    }
 }

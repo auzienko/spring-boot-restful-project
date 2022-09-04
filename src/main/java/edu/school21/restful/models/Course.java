@@ -26,6 +26,9 @@ public class Course extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name= "state")
+    private State state;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "tbl_course_users",
