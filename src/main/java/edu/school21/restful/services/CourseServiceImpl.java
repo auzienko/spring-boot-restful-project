@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -23,7 +24,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Set<Course> findAll() {
-        return new HashSet<>((Collection<Course>) courseRepository.findAll(Sort.by(DESC, "id")));
+        return new LinkedHashSet<>((Collection<Course>) courseRepository.findAll(Sort.by(DESC, "id")));
     }
 
     @Override

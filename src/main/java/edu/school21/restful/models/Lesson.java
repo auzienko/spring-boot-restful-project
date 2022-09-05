@@ -23,7 +23,7 @@ public class Lesson extends BaseEntity {
     @Column(name = "day_of_week")
     private DayOfWeek dayOfWeek;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "teacher", referencedColumnName = "id")
     private User teacher;
 }
