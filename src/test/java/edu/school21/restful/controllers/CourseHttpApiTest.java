@@ -121,8 +121,8 @@ public class CourseHttpApiTest {
                 "Test course",
                 "Test course description",
                 State.DRAFT,
-                null,
-                null,
+                teachers,
+                students,
                 null
         );
     }

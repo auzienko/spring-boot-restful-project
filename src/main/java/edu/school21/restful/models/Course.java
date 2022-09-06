@@ -32,11 +32,10 @@ public class Course extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
-                    CascadeType.PERSIST,
                     CascadeType.MERGE
             })
     @JoinTable(
-            name = "tbl_course_users",
+            name = "tbl_course_teacher",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @RestResource(exported = false)
@@ -44,11 +43,10 @@ public class Course extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
-                    CascadeType.PERSIST,
                     CascadeType.MERGE
             })
     @JoinTable(
-            name = "tbl_course_users",
+            name = "tbl_course_student",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @RestResource(exported = false)
@@ -61,7 +59,7 @@ public class Course extends BaseEntity {
             }
     )
     @JoinTable(
-            name = "tbl_course_lessons",
+            name = "tbl_course_lesson",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     @RestResource(exported = false)
