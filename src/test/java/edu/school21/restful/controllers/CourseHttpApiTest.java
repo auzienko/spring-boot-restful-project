@@ -72,6 +72,7 @@ public class CourseHttpApiTest {
     public void createCourse() throws Exception {
         Course course = course();
         String requestBody = saveRequestJsonString(course);
+        System.out.println(requestBody);
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
                 .post("/courses")
                 .accept(MediaTypes.HAL_JSON)
@@ -96,18 +97,6 @@ public class CourseHttpApiTest {
         return ow.writeValueAsString(course);
     }
 
-    //        public Course course() {
-//        return new Course(
-//                LocalDate.now(),
-//                LocalDate.now(),
-//                "Test course",
-//                "Test course description",
-//                State.DRAFT,
-//                new HashSet<User>(Collections.singletonList(referenceUser)),
-//                new HashSet<User>(Collections.singletonList(referenceUser)),
-//                new HashSet<Lesson>(Collections.singletonList(referenceLesson))
-//        );
-//    }
     public Course course() {
         Set<User> teachers = new HashSet<>();
         teachers.add(referenceUser);

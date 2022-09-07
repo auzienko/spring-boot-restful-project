@@ -3,6 +3,7 @@ package edu.school21.restful.models;
 import lombok.*;
 import org.springframework.data.rest.core.annotation.RestResource;
 
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class Course extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
-                    CascadeType.MERGE
+                    CascadeType.MERGE,
             })
     @JoinTable(
             name = "tbl_course_teacher",
@@ -43,7 +44,7 @@ public class Course extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
-                    CascadeType.MERGE
+                    CascadeType.MERGE,
             })
     @JoinTable(
             name = "tbl_course_student",
@@ -54,7 +55,6 @@ public class Course extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
-                    CascadeType.PERSIST,
                     CascadeType.MERGE
             }
     )
