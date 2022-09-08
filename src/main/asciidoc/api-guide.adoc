@@ -1,0 +1,19 @@
+= RESTful 21 API Guide
+achopper, zcris
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-http-request-title: Пример HTTP запроса
+:operation-curl-request-title: Пример curl запроса
+:operation-http-response-title: Пример ответа
+
+[[Courses]]
+== Courses
+
+[[Create]]
+=== Create course
+
+operation::create-course[snippets='http-request,curl-request,http-response']

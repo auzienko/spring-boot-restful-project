@@ -14,6 +14,7 @@ import edu.school21.restful.services.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
@@ -29,11 +30,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs("target/generated-snippets")
 public class CourseHttpApiTest {
 
     @Autowired
@@ -84,6 +87,7 @@ public class CourseHttpApiTest {
         final Course createdCourse = findCreatedCourse();
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is(createdCourse.getName())));
+        resultActions.andDo(document("create-course"));
     }
 
     private Course findCreatedCourse() {
@@ -112,6 +116,7 @@ public class CourseHttpApiTest {
                 State.DRAFT,
                 teachers,
                 students,
+                //todo найти проблему с бд
                 null
         );
     }
