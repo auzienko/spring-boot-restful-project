@@ -116,8 +116,7 @@ public class CourseHttpApiTest {
                 State.DRAFT,
                 teachers,
                 students,
-                //todo найти проблему с бд
-                null
+                lessons
         );
     }
 }
