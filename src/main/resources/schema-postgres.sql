@@ -26,7 +26,7 @@ create table if not exists rstf.tbl_lessons
     start_time      timestamp,
     end_time        timestamp,
     day_of_week     smallint,
-    teacher         varchar
+    teacher         bigint
 );
 
 create table if not exists rstf.tbl_course_lessons(
@@ -37,12 +37,21 @@ create table if not exists rstf.tbl_course_lessons(
     primary key (course_id, lesson_id)
 );
 
-create table if not exists rstf.tbl_course_users(
+create table if not exists rstf.tbl_course_students(
     course_id       bigint not null,
     user_id       bigint not null,
     foreign key (course_id) references rstf.tbl_courses(id),
     foreign key (user_id) references rstf.tbl_users(id),
     primary key (course_id, user_id)
 );
+
+create table if not exists rstf.tbl_course_teachers(
+   user_id       bigint not null,
+   course_id       bigint not null,
+   foreign key (course_id) references rstf.tbl_courses(id),
+   foreign key (user_id) references rstf.tbl_users(id),
+   primary key (course_id, user_id)
+);
+
 
 

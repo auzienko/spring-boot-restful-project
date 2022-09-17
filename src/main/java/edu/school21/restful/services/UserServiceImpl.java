@@ -38,5 +38,17 @@ public class UserServiceImpl implements UserService{
         userRepository.delete(user);
     }
 
-
+    @Override
+    public void updateUser(User entity, long id) {
+        User user = findById(id);
+        userRepository.findById(id).
+                map(toUpdate -> {
+                    toUpdate.setFirstName(entity.getFirstName() != null ? entity.getFirstName()    : user.getFirstName());
+                    toUpdate.setLogin(entity.getLogin() !=         null ? entity.getLogin()        : user.getLogin());
+                    toUpdate.setLastName(entity.getLastName() !=   null ? entity.getLastName()     : user.getLastName());
+                    toUpdate.setPassword(entity.getPassword() !=   null ? entity.getPassword()     : user.getPassword());
+                    toUpdate.setRole(entity.getRole() !=           null ? entity.getRole()         : user.getRole());
+                    return userRepository.save(toUpdate);
+                });
+    }
 }

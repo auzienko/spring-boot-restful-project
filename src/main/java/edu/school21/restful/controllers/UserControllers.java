@@ -45,10 +45,7 @@ public class UserControllers {
     )
     @PutMapping({"{user_id}"})
     public ResponseEntity<?> updateUser(@RequestBody User entity, @PathVariable Long user_id) {
-        User user = userService.findById(user_id);
-        //todo if not found throw exception
-        entity.setId(user_id);
-        userService.save(entity);
+       userService.updateUser(entity, user_id);
         return new ResponseEntity<>("User " + user_id + " updated", HttpStatus.OK);
     }
 
