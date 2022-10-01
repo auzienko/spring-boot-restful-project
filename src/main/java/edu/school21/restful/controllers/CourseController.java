@@ -1,21 +1,17 @@
 package edu.school21.restful.controllers;
 
+import edu.school21.restful.dto.CourseDto;
 import edu.school21.restful.models.Course;
-import edu.school21.restful.models.User;
-import edu.school21.restful.repositories.CourseRepository;
 import edu.school21.restful.services.CourseService;
-import edu.school21.restful.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -29,9 +25,8 @@ public class CourseController {
             description = "Method returns all courses"
     )
     @GetMapping(value = "/courses/", produces = "application/json")
-    public Set<Course> getAll() {
-        Set<Course> u = courseService.findAll();
-        return courseService.findAll();
+    public Set<Course> getAll(int page,  int size) {
+        return courseService.findAll(page, size);
     }
 
     @Operation(
@@ -49,7 +44,7 @@ public class CourseController {
             description = "Method edits a course"
     )
     @PutMapping(value = "/courses/{course_id}")
-    public ResponseEntity<?> updateCourse(@RequestBody Course entity, @PathVariable Long course_id) {
+    public ResponseEntity<?> updateCourse(@RequestBody CourseDto entity, @PathVariable Long course_id) {
         courseService.updateCourse(entity, course_id);
         return new ResponseEntity<>("Course " + course_id + " updated", HttpStatus.OK);
     }

@@ -1,8 +1,11 @@
 package edu.school21.restful.controllers;
 
+
 import edu.school21.restful.models.User;
 import edu.school21.restful.services.UserService;
+
 import io.swagger.v3.oas.annotations.Operation;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,15 +27,15 @@ public class UserControllers {
             description = "Method returns all users"
     )
     @GetMapping(produces = "application/json")
-    public Set<User> getAll() {
-        Set<User> u = userService.findAll();
-        return userService.findAll();
+    public Set<User> getAll(@RequestParam int page, @RequestParam int size) {
+        return userService.findAll(page, size);
     }
 
     @Operation(
             summary = "addNewUser",
             description = "Method adds a user"
     )
+
     @PostMapping()
     public String addUser(@RequestBody User user) {
         userService.save(user);

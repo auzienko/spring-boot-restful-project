@@ -10,4 +10,4 @@ INSERT INTO rstf.tbl_course_students(course_id, user_id) VALUES (1,4);
 INSERT INTO rstf.tbl_course_teachers(course_id, user_id) VALUES (1,2);
 
 
-select * from   rstf.tbl_course_students
+--select * from   rstf.tbl_course_students

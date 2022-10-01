@@ -1,5 +1,7 @@
 package edu.school21.restful.models;
 
+import edu.school21.restful.dto.UserDto;
+
 import lombok.*;
 
 import javax.persistence.*;

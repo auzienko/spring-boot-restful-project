@@ -16,9 +16,10 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
 
     @Override
-    public Set<Lesson> findAll() {
+    public Set<Lesson> findAll(int page, int size) {
         return  new HashSet<>(lessonRepository.findAll());
     }
+
 
     @Override
     public Lesson findById(Long id) {
