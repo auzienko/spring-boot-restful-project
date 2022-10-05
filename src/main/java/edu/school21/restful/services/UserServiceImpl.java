@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService{
         return new HashSet<>(userRepository.findAll(pr).getContent());
     }
 
+
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
@@ -61,5 +62,10 @@ public class UserServiceImpl implements UserService{
 //                    toUpdate.setRole(entity.getRole() !=           null ? entity.getRole()         : user.getRole());
 //                    return userRepository.save(toUpdate);
 //                });
+    }
+
+    @Override
+    public Set<User> findUsersById(Iterable<Long> idSet) {
+        return userRepository.getAllByIdIn(idSet);
     }
 }

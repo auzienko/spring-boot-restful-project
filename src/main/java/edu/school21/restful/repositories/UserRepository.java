@@ -15,6 +15,9 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     Set<User> getAllByRole(Role role);
 
+    Set<User> getAllByIdIn(Iterable<Long> idList);
+
+
     @Override
     void delete(User entity);
 

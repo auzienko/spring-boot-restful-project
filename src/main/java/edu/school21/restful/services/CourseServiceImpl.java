@@ -9,14 +9,16 @@ import edu.school21.restful.repositories.CourseRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final UserService userService;
+    private final ModelMapper mapper;
     @Override
     public Set<Course> findAll(int page,  int size) {
         return new HashSet<>(courseRepository.findAll());
@@ -43,14 +45,39 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void updateCourse(CourseDto entity, Long id) {
-        Course course = findById(id);
+    public void updateCourse(CourseDto entity, Long id) throws ResourceNotFoundException{
+        Course course = new Course();
+        Course toUpdate = findById(id);
+
         Set<Long> stId = entity.getStudentsId();
-        Set<User> students = new HashSet<>();
-        for (Long aLong : stId) {
-            students.add(userService.findById(aLong));
+        Set<Long> tchId = entity.getTeachersId();
+
+        Set<User> students = Objects.isNull(stId) ? null : userService.findUsersById(stId);
+        Set<User> teachers = Objects.isNull(tchId) ? null : userService.findUsersById(tchId);
+
+        List<Long> differences = new LinkedList<>();
+
+        if (!Objects.isNull(teachers) && !students.isEmpty()) {
+            Set<Long> sIds = students.stream().map(User::getId).collect(Collectors.toSet());
+            differences = stId.stream().filter(element -> !sIds.contains(element)).collect(Collectors.toList());
         }
+
+        if (!Objects.isNull(teachers) &&  !teachers.isEmpty()) {
+            Set<Long> tIds = teachers.stream().map(User::getId).collect(Collectors.toSet());
+            differences.addAll(tchId.stream().filter(element -> !tIds.contains(element)).collect(Collectors.toList()));
+        }
+
+        if (!differences.isEmpty()){
+            throw new ResourceNotFoundException("User with id " + differences.get(0) + " not found");
+        }
+
+        course.setStudents(students);
+        course.setTeachers(teachers);
         // TODO lessons
+        mapper.map(course, toUpdate);
+        save(toUpdate);
+
+
 //        courseRepository.findById(id).
 //                map(toUpdate -> {
 //                    toUpdate.setName(       entity.getName()        != null ? entity.getName()        : course.getName());
