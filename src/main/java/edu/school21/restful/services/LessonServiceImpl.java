@@ -5,8 +5,10 @@ import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.Lesson;
 import edu.school21.restful.repositories.LessonRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +19,8 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Set<Lesson> findAll(int page, int size) {
-        return  new HashSet<>(lessonRepository.findAll());
+        PageRequest pr = PageRequest.of(page,size);
+        return  new HashSet<>(lessonRepository.findAll(pr).getContent());
     }
 
 
@@ -39,5 +42,10 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void delete(Lesson entity) {
         lessonRepository.delete(entity);
+    }
+
+    @Override
+    public Set<Lesson> findLessonsById(Iterable<Long> idSet) {
+        return lessonRepository.getAllByIdIn(idSet);
     }
 }

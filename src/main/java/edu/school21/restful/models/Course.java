@@ -1,11 +1,8 @@
 package edu.school21.restful.models;
 
-import edu.school21.restful.dto.UserDto;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -34,6 +31,7 @@ public class Course extends BaseEntity {
             name = "tbl_course_teachers",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Set<User> teachers;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
@@ -41,12 +39,15 @@ public class Course extends BaseEntity {
             name = "tbl_course_students",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Set<User> students;
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "tbl_course_lessons",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_id"))
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Set<Lesson> lessons;
 }

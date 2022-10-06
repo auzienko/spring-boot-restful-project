@@ -1,18 +1,13 @@
 package edu.school21.restful.services;
 
 import edu.school21.restful.exeptions.ResourceNotFoundException;
-import edu.school21.restful.mappers.UserMapper;
 import edu.school21.restful.models.User;
 import edu.school21.restful.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.stereotype.Service;
 
-import javax.jws.WebParam;
 import java.util.HashSet;
 import java.util.Set;
 

@@ -27,6 +27,6 @@ public class CourseDto extends AbstractDto {
 
     private Set<Long> studentsId;
 
-    private Set<LessonDto> lessons;
+    private Set<Long> lessons;
 
 }
