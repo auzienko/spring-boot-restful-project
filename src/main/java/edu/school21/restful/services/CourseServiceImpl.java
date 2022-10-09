@@ -1,14 +1,19 @@
 package edu.school21.restful.services;
 
 
+import edu.school21.restful.dto.AbstractDto;
 import edu.school21.restful.dto.CourseDto;
+import edu.school21.restful.dto.LessonDto;
 import edu.school21.restful.exeptions.ResourceNotFoundException;
+import edu.school21.restful.models.BaseEntity;
 import edu.school21.restful.models.Course;
 import edu.school21.restful.models.Lesson;
 import edu.school21.restful.models.User;
 import edu.school21.restful.repositories.CourseRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +32,7 @@ public class CourseServiceImpl implements CourseService {
         PageRequest pr = PageRequest.of(page,size);
         return new HashSet<>(courseRepository.findAll(pr).getContent());
     }
+
 
     @Override
     public Course findById(Long id) {
@@ -52,6 +58,7 @@ public class CourseServiceImpl implements CourseService {
     public void updateCourse(CourseDto entity, Long id) throws ResourceNotFoundException{
         Course course = new Course();
         Course toUpdate = findById(id);
+        mapper.map(entity, course);
 
         Set<Long> stId = entity.getStudentsId();
         Set<Long> tchId = entity.getTeachersId();
@@ -90,6 +97,7 @@ public class CourseServiceImpl implements CourseService {
         course.setStudents(students);
         course.setTeachers(teachers);
         course.setLessons(lessons);
+
         mapper.map(course, toUpdate);
         save(toUpdate);
 //        courseRepository.findById(id).
@@ -114,7 +122,40 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Set<Lesson> getLessonsByCourse(Course course, int page, int size) {
-        //TODO get lessons
-        return null;
+        return lessonService.findLessonsById(course.getLessons().stream().map(Lesson::getId).collect(Collectors.toSet()), page, size);
+    }
+
+    @Override
+    public void addLessonToCourse(Course course, LessonDto lesson) {
+        if (Objects.isNull(lesson.getStartTime()) || Objects.isNull(lesson.getEndTime()) || Objects.isNull(lesson.getDayOfWeek()) || Objects.isNull(lesson.getTeacherId()))
+        {
+            throw new IllegalArgumentException("Wrong Lesson fields");
+        }
+        Lesson toUpdate = new Lesson();
+        mapper.map(lesson, toUpdate);
+        toUpdate.setTeacher(userService.findById(lesson.getTeacherId()));
+        course.getLessons().add(toUpdate);
+        courseRepository.save(course);
+    }
+
+    @Override
+    public void deleteLessonFromCourse(Course course, Long lessonId) {
+        course.getLessons().remove(lessonService.findById(lessonId));
+        courseRepository.save(course);
+    }
+
+    @Override
+    public void updateLessonInCourse(Course course, Long lessonId, LessonDto lesson) {
+        if (Objects.isNull(lesson.getStartTime()) || Objects.isNull(lesson.getEndTime()) || Objects.isNull(lesson.getDayOfWeek()) || Objects.isNull(lesson.getTeacherId()))
+        {
+            throw new IllegalArgumentException("Wrong Lesson fields");
+        }
+        TypeMap<LessonDto, Lesson> propertyMapper = this.mapper.createTypeMap( LessonDto.class,Lesson.class);
+        propertyMapper.addMappings(mapper -> mapper.skip(Lesson::setId));
+        Lesson toUpdate = lessonService.findById(lessonId);
+        mapper.map(lesson, toUpdate); //TODO wrong mapping teacherID as ID
+        toUpdate.setTeacher(userService.findById(lesson.getTeacherId()));
+
+        lessonService.save(toUpdate);
     }
 }

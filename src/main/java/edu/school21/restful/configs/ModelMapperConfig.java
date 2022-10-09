@@ -1,5 +1,6 @@
 package edu.school21.restful.configs;
 
+import edu.school21.restful.models.BaseEntity;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -18,7 +19,9 @@ public class ModelMapperConfig {
                 .setFieldMatchingEnabled(true)
                 .setSkipNullEnabled(true)
                 .setFieldAccessLevel(PRIVATE)
-                .setPropertyCondition(Conditions.isNotNull());
+                .setPropertyCondition(Conditions.isNotNull())
+                .setAmbiguityIgnored(true);
+
         return mapper;
     }
 

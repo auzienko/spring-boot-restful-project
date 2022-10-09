@@ -1,7 +1,6 @@
 package edu.school21.restful.dto;
 
 import edu.school21.restful.models.DayOfWeek;
-import edu.school21.restful.models.User;
 import lombok.*;
 import java.time.LocalTime;
 
@@ -16,5 +15,5 @@ public class LessonDto  {
     private LocalTime startTime;
     private LocalTime endTime;
     private DayOfWeek dayOfWeek;
-    private User teacher;
+    private Long teacherId;
 }

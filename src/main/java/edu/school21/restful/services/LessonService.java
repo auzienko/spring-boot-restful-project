@@ -7,4 +7,5 @@ import java.util.Set;
 
 public interface LessonService extends BaseService<Lesson>{
     Set<Lesson> findLessonsById(Iterable<Long> idSet);
+    Set<Lesson> findLessonsById(Iterable<Long> idSet, int page, int size);
 }

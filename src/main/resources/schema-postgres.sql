@@ -11,6 +11,7 @@ create table if not exists rstf.tbl_users
     login           varchar
 );
 
+
 create table if not exists rstf.tbl_courses
 (
     id              BIGSERIAL PRIMARY KEY,
@@ -23,8 +24,8 @@ create table if not exists rstf.tbl_courses
 create table if not exists rstf.tbl_lessons
 (
     id              BIGSERIAL PRIMARY KEY,
-    start_time      timestamp,
-    end_time        timestamp,
+    start_time      time,
+    end_time        time,
     day_of_week     smallint,
     teacher         bigint
 );
@@ -33,7 +34,7 @@ create table if not exists rstf.tbl_course_lessons(
     course_id       bigint not null,
     lesson_id       bigint not null,
     foreign key (course_id) references rstf.tbl_courses(id),
-    foreign key (lesson_id) references rstf.tbl_lessons(id),
+    foreign key (lesson_id) references rstf.tbl_lessons(id) on delete cascade,
     primary key (course_id, lesson_id)
 );
 
