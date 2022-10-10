@@ -4,6 +4,7 @@ import edu.school21.restful.dto.CourseDto;
 import edu.school21.restful.dto.LessonDto;
 import edu.school21.restful.models.Course;
 import edu.school21.restful.models.Lesson;
+import edu.school21.restful.models.User;
 import edu.school21.restful.services.CourseService;
 import edu.school21.restful.services.LessonService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -77,11 +78,12 @@ public class CourseController {
         Course course = courseService.findById(course_id);
         try {
             courseService.addLessonToCourse(course, lessonDto);
-        }catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>("Wrong lesson params", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Lesson to course " + course.getName() + " add", HttpStatus.OK);
     }
+
     @Operation(
             summary = "getLessonByCourse",
             description = "Method show lessons by a Course"
@@ -91,15 +93,14 @@ public class CourseController {
         return courseService.getLessonsByCourse(courseService.findById(course_id), page, size);
     }
 
-
     @Operation(
             summary = "deleteLessonByCurse",
             description = "Method deletes a lesson in course"
     )
     @DeleteMapping(value = "/courses/{course_id}/lessons/{lesson_id}")
-    public ResponseEntity<?> deleteLessonByCourse(@PathVariable Long course_id, @PathVariable Long lesson_id ) {
+    public ResponseEntity<?> deleteLessonByCourse(@PathVariable Long course_id, @PathVariable Long lesson_id) {
         courseService.deleteLessonFromCourse(courseService.findById(course_id), lesson_id);
-        return new ResponseEntity<>("Lesson " + lesson_id + "in "  + "course " + course_id + " deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Lesson " + lesson_id + "in " + "course " + course_id + " deleted", HttpStatus.OK);
     }
 
     @Operation(
@@ -107,12 +108,51 @@ public class CourseController {
             description = "Method update a lesson in course"
     )
     @PutMapping(value = "/courses/{course_id}/lessons/{lesson_id}")
-    public ResponseEntity<?> updateLessonByCourse(@PathVariable Long course_id, @PathVariable Long lesson_id, @RequestBody LessonDto entity ) {
+    public ResponseEntity<?> updateLessonByCourse(@PathVariable Long course_id, @PathVariable Long lesson_id, @RequestBody LessonDto entity) {
         try {
             courseService.updateLessonInCourse(courseService.findById(course_id), lesson_id, entity);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>("Wrong lesson params", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Lesson " + lesson_id + "in " + "course " + course_id + " updated", HttpStatus.OK);
+        return new ResponseEntity<>("Lesson " + lesson_id + " in " + "course " + course_id + " updated", HttpStatus.OK);
+    }
+
+    /*---------------------------------------------------------------------------------------------------------------------------*/
+
+    @Operation(
+            summary = "addStudentToCourse",
+            description = "Method add student to a course"
+    )
+    @PostMapping(value = "/courses/{course_id}/students")
+    public ResponseEntity<?> AddStudentToCourse(@PathVariable Long course_id, @RequestBody User student) {
+        Course course = courseService.findById(course_id);
+        try {
+            //TODO add user to course
+           // courseService.addStudentToCourse(course, StudentDto);
+        } catch (IllegalArgumentException ex) {
+            return new ResponseEntity<>("Wrong student params", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Student to course " + course.getName() + " add", HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "getStudentByCourse",
+            description = "Method show students in a course"
+    )
+    @GetMapping(value = "/courses/{course_id}/students")
+    public Set<User> GetStudentToCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
+        //TODO return pageable users in course
+        return null;
+    }
+
+    @Operation(
+            summary = "deleteStudentByCurse",
+            description = "Method deletes a student from course"
+    )
+    @DeleteMapping(value = "/courses/{course_id}/students/{student_id}")
+    public ResponseEntity<?> deleteStudentByCourse(@PathVariable Long course_id, @PathVariable Long student_id) {
+        //TODO delete student from course
+        //courseService.deleteStudentFromCourse(courseService.findById(course_id), student_id);
+        return new ResponseEntity<>("Student " + student_id + "in " + "course " + course_id + " deleted", HttpStatus.OK);
     }
 }

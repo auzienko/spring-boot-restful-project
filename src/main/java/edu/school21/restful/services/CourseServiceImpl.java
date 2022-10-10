@@ -1,19 +1,16 @@
 package edu.school21.restful.services;
 
 
-import edu.school21.restful.dto.AbstractDto;
+
 import edu.school21.restful.dto.CourseDto;
 import edu.school21.restful.dto.LessonDto;
 import edu.school21.restful.exeptions.ResourceNotFoundException;
-import edu.school21.restful.models.BaseEntity;
 import edu.school21.restful.models.Course;
 import edu.school21.restful.models.Lesson;
 import edu.school21.restful.models.User;
 import edu.school21.restful.repositories.CourseRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.TypeMap;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -150,11 +147,11 @@ public class CourseServiceImpl implements CourseService {
         {
             throw new IllegalArgumentException("Wrong Lesson fields");
         }
-        TypeMap<LessonDto, Lesson> propertyMapper = this.mapper.createTypeMap( LessonDto.class,Lesson.class);
-        propertyMapper.addMappings(mapper -> mapper.skip(Lesson::setId));
+        if (mapper.getTypeMap(LessonDto.class,Lesson.class) == null)
+            mapper.createTypeMap(LessonDto.class,Lesson.class).addMappings(mapper -> mapper.skip(Lesson::setId));
         Lesson toUpdate = lessonService.findById(lessonId);
-        mapper.map(lesson, toUpdate); //TODO wrong mapping teacherID as ID
         toUpdate.setTeacher(userService.findById(lesson.getTeacherId()));
+        mapper.map(lesson, toUpdate);
 
         lessonService.save(toUpdate);
     }
