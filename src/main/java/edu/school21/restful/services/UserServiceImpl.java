@@ -6,6 +6,7 @@ import edu.school21.restful.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -63,4 +64,13 @@ public class UserServiceImpl implements UserService{
     public Set<User> findUsersById(Iterable<Long> idSet) {
         return userRepository.getAllByIdIn(idSet);
     }
+
+    @Override
+    public Set<User> getUserByCourse(Iterable<Long> idSet, int page, int size) {
+        Pageable pr =  PageRequest.of(page,size);
+
+        return new HashSet<>(userRepository.findAllByIdIn(idSet,pr).getContent());
+    }
+
+
 }

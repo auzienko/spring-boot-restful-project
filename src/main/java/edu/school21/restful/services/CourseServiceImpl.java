@@ -7,6 +7,7 @@ import edu.school21.restful.dto.LessonDto;
 import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.Course;
 import edu.school21.restful.models.Lesson;
+import edu.school21.restful.models.Role;
 import edu.school21.restful.models.User;
 import edu.school21.restful.repositories.CourseRepository;
 import lombok.AllArgsConstructor;
@@ -137,6 +138,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteLessonFromCourse(Course course, Long lessonId) {
+        Lesson lesson = lessonService.findById(lessonId);
+        if (!course.getLessons().removeIf(x -> Objects.equals(x.getId(), lesson.getId())))
+            throw new IllegalArgumentException();
         course.getLessons().remove(lessonService.findById(lessonId));
         courseRepository.save(course);
     }
@@ -154,5 +158,27 @@ public class CourseServiceImpl implements CourseService {
         mapper.map(lesson, toUpdate);
 
         lessonService.save(toUpdate);
+    }
+
+    @Override
+    public void addUserToCourse(Course course, Long userId)  throws ResourceNotFoundException {
+        User student = userService.findById(userId);
+        if (student.getRole() != Role.STUDENT)
+            throw new IllegalArgumentException();
+        course.getStudents().add(student);
+        courseRepository.save(course);
+    }
+
+    @Override
+    public void deleteUserFromCourse(Course course, Long userId) throws ResourceNotFoundException{
+        User poorStudent = userService.findById(userId);
+        if (!course.getStudents().removeIf(x -> Objects.equals(x.getId(), poorStudent.getId())))
+            throw new IllegalArgumentException();
+        courseRepository.save(course);
+    }
+
+    @Override
+    public Set<User> getStudentsFromCourse(Course course, int page, int size) {
+        return userService.getUserByCourse(course.getStudents().stream().map(User::getId).collect(Collectors.toSet()), page,size);
     }
 }

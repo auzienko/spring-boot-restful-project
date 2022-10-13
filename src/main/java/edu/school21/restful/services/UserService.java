@@ -8,4 +8,7 @@ import java.util.Set;
 public interface UserService extends BaseService<User>{
     public void updateUser(User entity, long id);
     Set<User> findUsersById(Iterable<Long> idSet);
+
+    Set<User> getUserByCourse(Iterable<Long> idSet, int page, int size);
+
 }
