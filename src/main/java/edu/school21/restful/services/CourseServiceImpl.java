@@ -4,6 +4,7 @@ package edu.school21.restful.services;
 
 import edu.school21.restful.dto.CourseDto;
 import edu.school21.restful.dto.LessonDto;
+import edu.school21.restful.exeptions.EntityAlreadyInCourseException;
 import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.Course;
 import edu.school21.restful.models.Lesson;
@@ -13,7 +14,9 @@ import edu.school21.restful.repositories.CourseRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -161,24 +164,37 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void addUserToCourse(Course course, Long userId)  throws ResourceNotFoundException {
-        User student = userService.findById(userId);
-        if (student.getRole() != Role.STUDENT)
+    public void addUserToCourse(Course course, Long userId, Role role)  throws ResourceNotFoundException {
+        User user = userService.findById(userId);
+
+        if (user.getRole() != role)
             throw new IllegalArgumentException();
-        course.getStudents().add(student);
-        courseRepository.save(course);
+        if (!(course.getTeachers().stream().anyMatch(user1 -> Objects.equals(user1.getId(), userId)) ||
+                course.getStudents().stream().anyMatch(user1 -> Objects.equals(user1.getId(), userId)))) {
+            if (role == Role.STUDENT)
+                course.getStudents().add(user);
+            else if (role == Role.TEACHER)
+                course.getTeachers().add(user);
+            courseRepository.save(course);
+        }
+        else {
+            throw new EntityAlreadyInCourseException("User already in course!");
+        }
     }
 
     @Override
     public void deleteUserFromCourse(Course course, Long userId) throws ResourceNotFoundException{
-        User poorStudent = userService.findById(userId);
-        if (!course.getStudents().removeIf(x -> Objects.equals(x.getId(), poorStudent.getId())))
+        User poorUser = userService.findById(userId);
+        if (!course.getStudents().removeIf(x -> Objects.equals(x.getId(), poorUser.getId())))
             throw new IllegalArgumentException();
         courseRepository.save(course);
     }
 
     @Override
-    public Set<User> getStudentsFromCourse(Course course, int page, int size) {
-        return userService.getUserByCourse(course.getStudents().stream().map(User::getId).collect(Collectors.toSet()), page,size);
+    public Set<User> getUsersFromCourse(Course course, Role role, int page, int size) {
+        if (role == Role.ADMINISTRATOR)
+            return null;
+        Set<User> list = role == Role.TEACHER ? course.getTeachers() : course.getStudents();
+        return userService.getUserByCourse(list.stream().map(User::getId).collect(Collectors.toSet()), page,size);
     }
 }

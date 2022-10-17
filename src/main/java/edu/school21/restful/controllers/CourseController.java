@@ -2,13 +2,16 @@ package edu.school21.restful.controllers;
 
 import edu.school21.restful.dto.CourseDto;
 import edu.school21.restful.dto.LessonDto;
+import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.Course;
 import edu.school21.restful.models.Lesson;
+import edu.school21.restful.models.Role;
 import edu.school21.restful.models.User;
 import edu.school21.restful.services.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.expression.ExpressionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -124,7 +127,7 @@ public class CourseController {
     public ResponseEntity<?> AddStudentToCourse(@PathVariable Long course_id, @RequestParam Long student_id) {
         Course course = courseService.findById(course_id);
         try {
-            courseService.addUserToCourse(course, student_id);
+            courseService.addUserToCourse(course, student_id, Role.STUDENT);
         }catch (IllegalArgumentException exception){
             return new ResponseEntity<>("Wrong user role", HttpStatus.BAD_REQUEST);
         }
@@ -137,7 +140,7 @@ public class CourseController {
     )
     @GetMapping(value = "/courses/{course_id}/students")
     public Set<User> GetStudentsFromCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
-        return courseService.getStudentsFromCourse(courseService.findById(course_id), page, size);
+        return courseService.getUsersFromCourse(courseService.findById(course_id), Role.STUDENT, page, size);
     }
 
     @Operation(
@@ -153,5 +156,46 @@ public class CourseController {
             return new ResponseEntity<>("User " + student_id + " not found in course", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Student " + student_id + "from " + "course " + course_id + " deleted", HttpStatus.OK);
+    }
+
+/*---------------------------------------------------------------------------------------------------------------------------*/
+
+    @Operation(
+            summary = "addTeacherToCourse",
+            description = "Method add teacher to a course"
+    )
+    @PostMapping(value = "/courses/{course_id}/teachers")
+    public ResponseEntity<?> AddTeacherToCourse(@PathVariable Long course_id, @RequestParam Long teacher_id) {
+        Course course = courseService.findById(course_id);
+        try {
+            courseService.addUserToCourse(course, teacher_id, Role.TEACHER);
+        }catch (IllegalArgumentException exception){
+            return new ResponseEntity<>("Wrong user role", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Teacher add course " + course.getName(), HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "getTeacherByCourse",
+            description = "Method show teachers in a course"
+    )
+    @GetMapping(value = "/courses/{course_id}/teachers")
+    public Set<User> GetTeachersFromCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
+        return courseService.getUsersFromCourse(courseService.findById(course_id), Role.TEACHER, page, size);
+    }
+
+    @Operation(
+            summary = "deleteTeacherByCurse",
+            description = "Method deletes a teacher from course"
+    )
+    @DeleteMapping(value = "/courses/{course_id}/teachers/{teacher_id}")
+    public ResponseEntity<?> deleteTeacherByCourse(@PathVariable Long course_id, @PathVariable Long teacher_id) {
+        Course course = courseService.findById(course_id);
+        try {
+            courseService.deleteUserFromCourse(course, teacher_id);
+        }catch (IllegalArgumentException exception){
+            return new ResponseEntity<>("User " + teacher_id + " not found in course", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Teacher " + teacher_id + "from " + "course " + course_id + " deleted", HttpStatus.OK);
     }
 }
