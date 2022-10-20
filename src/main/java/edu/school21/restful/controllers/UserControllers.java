@@ -27,8 +27,8 @@ public class UserControllers {
             description = "Method returns all users"
     )
     @GetMapping(produces = "application/json")
-    public Set<User> getAll(@RequestParam int page, @RequestParam int size) {
-        return userService.findAll(page, size);
+    public ResponseEntity<?> getAll(@RequestParam int page, @RequestParam int size) {
+        return new ResponseEntity<>(userService.findAll(page, size), HttpStatus.OK );
     }
 
     @Operation(
@@ -37,9 +37,9 @@ public class UserControllers {
     )
 
     @PostMapping()
-    public String addUser(@RequestBody User user) {
+    public ResponseEntity<?> addUser(@RequestBody User user) {
         userService.save(user);
-        return "User " + user.getLogin() + " saved";
+        return new ResponseEntity<>("User " + user.getLogin() + " updated\n" + user.toString() , HttpStatus.CREATED);
     }
 
     @Operation(
