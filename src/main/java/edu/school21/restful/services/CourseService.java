@@ -20,7 +20,7 @@ public interface CourseService extends BaseService<Course> {
     void deleteLessonFromCourse(Course course, Long lessonId);
     void updateLessonInCourse(Course course, Long lessonId, LessonDto lesson);
     void addUserToCourse(Course course, Long userId, Role role);
-    void deleteUserFromCourse(Course course, Long userId);
+    void deleteUserFromCourse(Course course, Long userId, Role role);
     Set<User> getUsersFromCourse(Course course, Role role, int page, int size);
 
 }

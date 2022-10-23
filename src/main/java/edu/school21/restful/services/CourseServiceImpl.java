@@ -150,15 +150,21 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void updateLessonInCourse(Course course, Long lessonId, LessonDto lesson) {
-        if (Objects.isNull(lesson.getStartTime()) || Objects.isNull(lesson.getEndTime()) || Objects.isNull(lesson.getDayOfWeek()) || Objects.isNull(lesson.getTeacherId()))
-        {
+        if (Objects.isNull(lesson.getStartTime()) ||
+                Objects.isNull(lesson.getEndTime()) ||
+                Objects.isNull(lesson.getDayOfWeek()) ||
+                Objects.isNull(lesson.getTeacherId()) ||
+                userService.findById(lesson.getTeacherId()).getRole() != Role.TEACHER) {
             throw new IllegalArgumentException("Wrong Lesson fields");
         }
-        if (mapper.getTypeMap(LessonDto.class,Lesson.class) == null)
-            mapper.createTypeMap(LessonDto.class,Lesson.class).addMappings(mapper -> mapper.skip(Lesson::setId));
+//        if (mapper.getTypeMap(LessonDto.class,Lesson.class) == null)
+//            mapper.createTypeMap(LessonDto.class,Lesson.class).addMappings(mapper -> mapper.skip(Lesson::setId));
         Lesson toUpdate = lessonService.findById(lessonId);
         toUpdate.setTeacher(userService.findById(lesson.getTeacherId()));
-        mapper.map(lesson, toUpdate);
+        toUpdate.setStartTime(lesson.getStartTime());
+        toUpdate.setEndTime(lesson.getEndTime());
+        toUpdate.setDayOfWeek(lesson.getDayOfWeek());
+       // mapper.map(lesson, toUpdate);
 
         lessonService.save(toUpdate);
     }
@@ -183,9 +189,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteUserFromCourse(Course course, Long userId) throws ResourceNotFoundException{
+    public void deleteUserFromCourse(Course course, Long userId, Role role) throws ResourceNotFoundException{
         User poorUser = userService.findById(userId);
-        if (!course.getStudents().removeIf(x -> Objects.equals(x.getId(), poorUser.getId())))
+        Set<User> uSet = role == Role.STUDENT ? course.getStudents() : course.getTeachers();
+        if (!uSet.removeIf(x -> Objects.equals(x.getId(), poorUser.getId())))
             throw new IllegalArgumentException();
         courseRepository.save(course);
     }

@@ -39,9 +39,9 @@ public class CourseController {
             description = "Method adds a course"
     )
     @PostMapping(value = "/courses/")
-    public String addCourse(@RequestBody Course course) {
+    public ResponseEntity<?> addCourse(@RequestBody Course course) {
         courseService.addNewCourse(course);
-        return "course " + course.getName() + " saved";
+        return new ResponseEntity<>("course " + course.getName() + " saved", HttpStatus.CREATED);
     }
 
     @Operation(
@@ -85,7 +85,7 @@ public class CourseController {
             description = "Method show lessons by a Course"
     )
     @GetMapping(value = "/courses/{course_id}/lessons")
-    public Set<Lesson> GetLessonToCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
+    public Set<Lesson> GetLessonFromCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
         return courseService.getLessonsByCourse(courseService.findById(course_id), page, size);
     }
 
@@ -100,7 +100,7 @@ public class CourseController {
         }catch (IllegalArgumentException e){
             return new ResponseEntity<>("Lesson " + course_id + " not found in course", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Lesson " + lesson_id + "in " + "course " + course_id + " deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Lesson " + lesson_id + " from course " + course_id + " deleted", HttpStatus.OK);
     }
 
     @Operation(
@@ -151,11 +151,11 @@ public class CourseController {
     public ResponseEntity<?> deleteStudentByCourse(@PathVariable Long course_id, @PathVariable Long student_id) {
         Course course = courseService.findById(course_id);
         try {
-            courseService.deleteUserFromCourse(course, student_id);
+            courseService.deleteUserFromCourse(course, student_id, Role.STUDENT);
         }catch (IllegalArgumentException exception){
             return new ResponseEntity<>("User " + student_id + " not found in course", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Student " + student_id + "from " + "course " + course_id + " deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Student " + student_id + " from course " + course_id + " deleted", HttpStatus.OK);
     }
 
 /*---------------------------------------------------------------------------------------------------------------------------*/
@@ -192,10 +192,10 @@ public class CourseController {
     public ResponseEntity<?> deleteTeacherByCourse(@PathVariable Long course_id, @PathVariable Long teacher_id) {
         Course course = courseService.findById(course_id);
         try {
-            courseService.deleteUserFromCourse(course, teacher_id);
+            courseService.deleteUserFromCourse(course, teacher_id, Role.TEACHER);
         }catch (IllegalArgumentException exception){
             return new ResponseEntity<>("User " + teacher_id + " not found in course", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Teacher " + teacher_id + "from " + "course " + course_id + " deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Teacher " + teacher_id + " from course " + course_id + " deleted", HttpStatus.OK);
     }
 }
