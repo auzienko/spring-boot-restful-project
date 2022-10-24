@@ -11,7 +11,6 @@ import edu.school21.restful.services.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.expression.ExpressionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +49,11 @@ public class CourseController {
     )
     @PutMapping(value = "/courses/{course_id}")
     public ResponseEntity<?> updateCourse(@RequestBody CourseDto entity, @PathVariable Long course_id) {
-        courseService.updateCourse(entity, course_id);
+        try {
+            courseService.updateCourse(entity, course_id);
+        }catch (ResourceNotFoundException | IllegalArgumentException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("Course " + course_id + " updated", HttpStatus.OK);
     }
 
@@ -75,7 +78,7 @@ public class CourseController {
         try {
             courseService.addLessonToCourse(course, lessonDto);
         } catch (IllegalArgumentException ex) {
-            return new ResponseEntity<>("Wrong lesson params", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request: Wrong lesson params", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Lesson to course " + course.getName() + " add", HttpStatus.OK);
     }
@@ -98,7 +101,7 @@ public class CourseController {
         try {
             courseService.deleteLessonFromCourse(courseService.findById(course_id), lesson_id);
         }catch (IllegalArgumentException e){
-            return new ResponseEntity<>("Lesson " + course_id + " not found in course", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request: Lesson " + course_id + " not found in course", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Lesson " + lesson_id + " from course " + course_id + " deleted", HttpStatus.OK);
     }
@@ -112,7 +115,7 @@ public class CourseController {
         try {
             courseService.updateLessonInCourse(courseService.findById(course_id), lesson_id, entity);
         } catch (IllegalArgumentException ex) {
-            return new ResponseEntity<>("Wrong lesson params", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request: Wrong lesson params", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Lesson " + lesson_id + " in " + "course " + course_id + " updated", HttpStatus.OK);
     }
@@ -129,7 +132,7 @@ public class CourseController {
         try {
             courseService.addUserToCourse(course, student_id, Role.STUDENT);
         }catch (IllegalArgumentException exception){
-            return new ResponseEntity<>("Wrong user role", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request: Wrong user role", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Student add course " + course.getName(), HttpStatus.OK);
     }
@@ -153,7 +156,7 @@ public class CourseController {
         try {
             courseService.deleteUserFromCourse(course, student_id, Role.STUDENT);
         }catch (IllegalArgumentException exception){
-            return new ResponseEntity<>("User " + student_id + " not found in course", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request:  " + student_id + " not found in course", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Student " + student_id + " from course " + course_id + " deleted", HttpStatus.OK);
     }
@@ -170,7 +173,7 @@ public class CourseController {
         try {
             courseService.addUserToCourse(course, teacher_id, Role.TEACHER);
         }catch (IllegalArgumentException exception){
-            return new ResponseEntity<>("Wrong user role", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request: Wrong user role", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Teacher add course " + course.getName(), HttpStatus.OK);
     }
@@ -194,7 +197,7 @@ public class CourseController {
         try {
             courseService.deleteUserFromCourse(course, teacher_id, Role.TEACHER);
         }catch (IllegalArgumentException exception){
-            return new ResponseEntity<>("User " + teacher_id + " not found in course", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad request: User " + teacher_id + " not found in course", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Teacher " + teacher_id + " from course " + course_id + " deleted", HttpStatus.OK);
     }

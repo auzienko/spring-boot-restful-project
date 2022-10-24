@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.school21.restful.dto.CourseDto;
 import edu.school21.restful.dto.LessonDto;
 import edu.school21.restful.models.DayOfWeek;
+import edu.school21.restful.models.Lesson;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +158,7 @@ class CourseControllerTest {
     @Test
     void updateCourse() throws Exception{
         CourseDto courseDto = new CourseDto(  LocalDate.now(),
-                LocalDate.now(), "Updated", "Updated", new HashSet<>(Collections.singletonList(2L)), new HashSet<>(Arrays.asList(3L, 4L, 5L)), new HashSet<>(Collections.singletonList(1L)));
+                LocalDate.now(), "Updated", "Updated", new HashSet<>(Collections.singletonList(2L)), new HashSet<>(Arrays.asList(3L, 4L, 6L)), new HashSet<>(Collections.singletonList(1L)));
         mockMvc.perform( MockMvcRequestBuilders
                         .put("/courses/{id}", 2)
                         .content(mapper.writeValueAsString(courseDto))

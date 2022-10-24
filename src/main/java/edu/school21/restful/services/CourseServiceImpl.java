@@ -37,7 +37,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course findById(Long id) {
-        return courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course with id " + id + " not found"));
+        return courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Bad request: Course with id " + id + " not found"));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void updateCourse(CourseDto entity, Long id) throws ResourceNotFoundException{
+    public void updateCourse(CourseDto entity, Long id) throws ResourceNotFoundException {
         Course course = new Course();
         Course toUpdate = findById(id);
         mapper.map(entity, course);
@@ -77,24 +77,29 @@ public class CourseServiceImpl implements CourseService {
             userDifferences = stId.stream().filter(element -> !sIds.contains(element)).collect(Collectors.toList());
         }
 
-        if (!Objects.isNull(teachers) &&  !teachers.isEmpty()) {
-            Set<Long> tIds = teachers.stream().map(User::getId).collect(Collectors.toSet());
-            userDifferences.addAll(tchId.stream().filter(element -> !tIds.contains(element)).collect(Collectors.toList()));
-        }
-
-        if (!Objects.isNull(lessons) &&  !lessons.isEmpty()) {
+        if (!Objects.isNull(lessons) && !lessons.isEmpty()) {
             Set<Long> lIds = lessons.stream().map(Lesson::getId).collect(Collectors.toSet());
             lessonsDifferences = lsId.stream().filter(element -> !lIds.contains(element)).collect(Collectors.toList());
         }
 
-        if (!userDifferences.isEmpty()){
-            throw new ResourceNotFoundException("User with id " + userDifferences.get(0) + " not found");
+        if (!Objects.isNull(teachers) && !teachers.isEmpty()) {
+            Set<Long> tIds = teachers.stream().map(User::getId).collect(Collectors.toSet());
+            userDifferences.addAll(tchId.stream().filter(element -> !tIds.contains(element)).collect(Collectors.toList()));
         }
 
-       if (!lessonsDifferences.isEmpty()){
-           throw new ResourceNotFoundException("Lesson with id " + lessonsDifferences.get(0) + " not found");
-       }
 
+        if (!userDifferences.isEmpty()) {
+            throw new ResourceNotFoundException("Bad request: User with id " + userDifferences.get(0) + " not found");
+        }
+
+        if (!lessonsDifferences.isEmpty()) {
+            throw new ResourceNotFoundException("Bad request: Lesson with id " + lessonsDifferences.get(0) + " not found");
+        }
+
+        if (students.stream().filter(user -> user.getRole() != Role.STUDENT).collect(Collectors.toSet()).size() > 0 ||
+                teachers.stream().filter(user -> user.getRole() != Role.TEACHER).collect(Collectors.toSet()).size() > 0 ){
+            throw new IllegalArgumentException("Bad request: Wrong role in students or teachers");
+        }
         course.setStudents(students);
         course.setTeachers(teachers);
         course.setLessons(lessons);
@@ -130,7 +135,7 @@ public class CourseServiceImpl implements CourseService {
     public void addLessonToCourse(Course course, LessonDto lesson) {
         if (Objects.isNull(lesson.getStartTime()) || Objects.isNull(lesson.getEndTime()) || Objects.isNull(lesson.getDayOfWeek()) || Objects.isNull(lesson.getTeacherId()))
         {
-            throw new IllegalArgumentException("Wrong Lesson fields");
+            throw new IllegalArgumentException("Bad request: Wrong Lesson fields");
         }
         Lesson toUpdate = new Lesson();
         mapper.map(lesson, toUpdate);
@@ -155,18 +160,12 @@ public class CourseServiceImpl implements CourseService {
                 Objects.isNull(lesson.getDayOfWeek()) ||
                 Objects.isNull(lesson.getTeacherId()) ||
                 userService.findById(lesson.getTeacherId()).getRole() != Role.TEACHER) {
-            throw new IllegalArgumentException("Wrong Lesson fields");
+            throw new IllegalArgumentException("Bad request: Wrong Lesson fields");
         }
-//        if (mapper.getTypeMap(LessonDto.class,Lesson.class) == null)
-//            mapper.createTypeMap(LessonDto.class,Lesson.class).addMappings(mapper -> mapper.skip(Lesson::setId));
         Lesson toUpdate = lessonService.findById(lessonId);
-        toUpdate.setTeacher(userService.findById(lesson.getTeacherId()));
-        toUpdate.setStartTime(lesson.getStartTime());
-        toUpdate.setEndTime(lesson.getEndTime());
-        toUpdate.setDayOfWeek(lesson.getDayOfWeek());
-       // mapper.map(lesson, toUpdate);
+       mapper.map(lesson, toUpdate);
 
-        lessonService.save(toUpdate);
+       lessonService.save(toUpdate);
     }
 
     @Override
@@ -184,7 +183,7 @@ public class CourseServiceImpl implements CourseService {
             courseRepository.save(course);
         }
         else {
-            throw new EntityAlreadyInCourseException("User already in course!");
+            throw new EntityAlreadyInCourseException("Bad request: User already in course!");
         }
     }
 
