@@ -10,6 +10,8 @@ import edu.school21.restful.security.payload.response.JwtResponse;
 import edu.school21.restful.security.payload.response.MessageResponse;
 import edu.school21.restful.security.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,6 +45,13 @@ public class AuthController {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<?>  redirectToApi(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/swagger-ui/index.html");
+        return new ResponseEntity<String>(headers, HttpStatus.PERMANENT_REDIRECT);
     }
 
     @PostMapping("/signIn")
