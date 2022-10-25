@@ -1,8 +1,11 @@
 package edu.school21.restful.controllers;
 
+
 import edu.school21.restful.models.User;
 import edu.school21.restful.services.UserService;
+
 import io.swagger.v3.oas.annotations.Operation;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,19 +27,19 @@ public class UserControllers {
             description = "Method returns all users"
     )
     @GetMapping(produces = "application/json")
-    public Set<User> getAll() {
-        Set<User> u = userService.findAll();
-        return userService.findAll();
+    public ResponseEntity<?> getAll(@RequestParam int page, @RequestParam int size) {
+        return new ResponseEntity<>(userService.findAll(page, size), HttpStatus.OK );
     }
 
     @Operation(
             summary = "addNewUser",
             description = "Method adds a user"
     )
+
     @PostMapping()
-    public String addUser(@RequestBody User user) {
+    public ResponseEntity<?> addUser(@RequestBody User user) {
         userService.save(user);
-        return "User " + user.getLogin() + " saved";
+        return new ResponseEntity<>("User " + user.getLogin() + " updated\n" + user.toString() , HttpStatus.CREATED);
     }
 
     @Operation(
@@ -45,10 +48,7 @@ public class UserControllers {
     )
     @PutMapping({"{user_id}"})
     public ResponseEntity<?> updateUser(@RequestBody User entity, @PathVariable Long user_id) {
-        User user = userService.findById(user_id);
-        //todo if not found throw exception
-        entity.setId(user_id);
-        userService.save(entity);
+       userService.updateUser(entity, user_id);
         return new ResponseEntity<>("User " + user_id + " updated", HttpStatus.OK);
     }
 
