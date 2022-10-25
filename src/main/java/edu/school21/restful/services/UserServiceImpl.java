@@ -3,20 +3,28 @@ package edu.school21.restful.services;
 import edu.school21.restful.exeptions.ResourceNotFoundException;
 import edu.school21.restful.models.User;
 import edu.school21.restful.repositories.UserRepository;
+import edu.school21.restful.security.UserDetailsImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    final
+    PasswordEncoder encoder;
+
 
     public Set<User> findAll(int page,  int size){
         PageRequest pr = PageRequest.of(page,size);
@@ -39,11 +47,19 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteById(id);
     }
 
-    public void delete(User user){
+    public void delete(User user) {
         userRepository.delete(user);
     }
 
     @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByLogin(username);
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException(username);
+        }
+        return UserDetailsImpl.build(user.get());
+    }
+
     public void updateUser(User entity, long id) {
         User toUpdate = findById(id);
         modelMapper.map(entity, toUpdate);
@@ -71,6 +87,5 @@ public class UserServiceImpl implements UserService{
 
         return new HashSet<>(userRepository.findAllByIdIn(idSet,pr).getContent());
     }
-
 
 }

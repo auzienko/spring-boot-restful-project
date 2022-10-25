@@ -9,10 +9,12 @@ import edu.school21.restful.models.Role;
 import edu.school21.restful.models.User;
 import edu.school21.restful.services.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -28,6 +30,8 @@ public class CourseController {
             summary = "getAllCourses",
             description = "Method returns all courses"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR') or hasAuthority('STUDENT') or hasAuthority('TEACHER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/courses/", produces = "application/json")
     public Set<Course> getAll(@RequestParam int page, @RequestParam int size) {
         return courseService.findAll(page, size);
@@ -37,6 +41,8 @@ public class CourseController {
             summary = "addNewCourse",
             description = "Method adds a course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/courses/")
     public ResponseEntity<?> addCourse(@RequestBody Course course) {
         courseService.addNewCourse(course);
@@ -47,6 +53,8 @@ public class CourseController {
             summary = "updateCourse",
             description = "Method edits a course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/courses/{course_id}")
     public ResponseEntity<?> updateCourse(@RequestBody CourseDto entity, @PathVariable Long course_id) {
         try {
@@ -61,6 +69,8 @@ public class CourseController {
             summary = "deleteCourse",
             description = "Method deletes a Course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping(value = "/courses/{course_id}")
     public ResponseEntity<?> deleteCourse(@PathVariable Long course_id) {
         Course course = courseService.findById(course_id);
@@ -72,6 +82,8 @@ public class CourseController {
             summary = "addLessonToCourse",
             description = "Method add lesson to a Course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/courses/{course_id}/lessons")
     public ResponseEntity<?> AddLessonToCourse(@PathVariable Long course_id, @RequestBody LessonDto lessonDto) {
         Course course = courseService.findById(course_id);
@@ -87,6 +99,8 @@ public class CourseController {
             summary = "getLessonByCourse",
             description = "Method show lessons by a Course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR') or hasAuthority('STUDENT') or hasAuthority('TEACHER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/courses/{course_id}/lessons")
     public Set<Lesson> GetLessonFromCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
         return courseService.getLessonsByCourse(courseService.findById(course_id), page, size);
@@ -96,6 +110,8 @@ public class CourseController {
             summary = "deleteLessonByCurse",
             description = "Method deletes a lesson in course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping(value = "/courses/{course_id}/lessons/{lesson_id}")
     public ResponseEntity<?> deleteLessonByCourse(@PathVariable Long course_id, @PathVariable Long lesson_id) {
         try {
@@ -110,6 +126,8 @@ public class CourseController {
             summary = "updateLessonByCurse",
             description = "Method update a lesson in course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/courses/{course_id}/lessons/{lesson_id}")
     public ResponseEntity<?> updateLessonByCourse(@PathVariable Long course_id, @PathVariable Long lesson_id, @RequestBody LessonDto entity) {
         try {
@@ -126,6 +144,8 @@ public class CourseController {
             summary = "addStudentToCourse",
             description = "Method add student to a course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/courses/{course_id}/students")
     public ResponseEntity<?> AddStudentToCourse(@PathVariable Long course_id, @RequestParam Long student_id) {
         Course course = courseService.findById(course_id);
@@ -141,6 +161,8 @@ public class CourseController {
             summary = "getStudentByCourse",
             description = "Method show students in a course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR') or hasAuthority('STUDENT') or hasAuthority('TEACHER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/courses/{course_id}/students")
     public Set<User> GetStudentsFromCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
         return courseService.getUsersFromCourse(courseService.findById(course_id), Role.STUDENT, page, size);
@@ -150,6 +172,8 @@ public class CourseController {
             summary = "deleteStudentByCurse",
             description = "Method deletes a student from course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping(value = "/courses/{course_id}/students/{student_id}")
     public ResponseEntity<?> deleteStudentByCourse(@PathVariable Long course_id, @PathVariable Long student_id) {
         Course course = courseService.findById(course_id);
@@ -167,6 +191,8 @@ public class CourseController {
             summary = "addTeacherToCourse",
             description = "Method add teacher to a course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/courses/{course_id}/teachers")
     public ResponseEntity<?> AddTeacherToCourse(@PathVariable Long course_id, @RequestParam Long teacher_id) {
         Course course = courseService.findById(course_id);
@@ -182,6 +208,8 @@ public class CourseController {
             summary = "getTeacherByCourse",
             description = "Method show teachers in a course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR') or hasAuthority('STUDENT') or hasAuthority('TEACHER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/courses/{course_id}/teachers")
     public Set<User> GetTeachersFromCourse(@PathVariable Long course_id, @RequestParam int page, @RequestParam int size) {
         return courseService.getUsersFromCourse(courseService.findById(course_id), Role.TEACHER, page, size);
@@ -191,6 +219,8 @@ public class CourseController {
             summary = "deleteTeacherByCurse",
             description = "Method deletes a teacher from course"
     )
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping(value = "/courses/{course_id}/teachers/{teacher_id}")
     public ResponseEntity<?> deleteTeacherByCourse(@PathVariable Long course_id, @PathVariable Long teacher_id) {
         Course course = courseService.findById(course_id);

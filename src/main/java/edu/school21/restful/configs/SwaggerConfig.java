@@ -1,6 +1,8 @@
 package edu.school21.restful.configs;
 
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,6 +15,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
+@SecurityScheme(
+        name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
