@@ -1,6 +1,7 @@
 package edu.school21.restful.models;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.time.LocalTime;
 @ToString
 @Table(schema = "rstf", name = "tbl_lessons")
 public class Lesson extends BaseEntity {
+    @ApiModelProperty(required = true)
     @Column(name = "start_time")
     private LocalTime startTime;
 
